@@ -1,5 +1,4 @@
 Require Import Basics.
-Require Export Lists.
 
 Inductive boollist : Type :=
 | bool_nil : boollist
