@@ -86,11 +86,64 @@ Proof.
   intros. generalize dependent n.
   induction l as [| x l'].
   Case "l = []". simpl. reflexivity.
-  Case "l = x :: l'". intros n H. simpl.
-    rewrite <- H. simpl. apply index_after_self_length.
-    (*
-正直最後のapplyのやり方に納得がいかない．
-だってlの帰納法を使うまでも無く解けてしますやり方だから，
-lの帰納法を使うという練習問題としての意味がなくなってしまう．
-     *)
+  Case "l = x :: l'". intros n H. simpl. simpl in H.
+    destruct n as [| n'].
+    SCase "n = 0". inversion H.
+    SCase "n = S n'". inversion H. apply IHl'. reflexivity.
+Qed.
+
+Theorem length_snoc''' : forall (n : nat) (X : Type)
+                                (v : X) (l : list X),
+    length l = n ->
+    length (snoc l v) = S n.
+Proof.
+  intros. generalize dependent n.
+  induction l as [| x l'].
+  Case "l = []". intros. rewrite <- H. reflexivity.
+  Case "l = x :: l'". intros. simpl.
+    destruct n as [| n'].
+    SCase "n = 0". inversion H.
+    SCase "n = S n'". apply eq_remove_S. apply IHl'.
+      simpl in H. inversion H. reflexivity.
+Qed.
+
+Theorem app_length : forall (X:Type) (l1 l2:list X),
+    length (l1 ++ l2) = (length l1) + (length l2).
+Proof.
+  intros. induction l1 as [| x l1'].
+  Case "l1 = []". reflexivity.
+  Case "l1 = x :: l1'". simpl. rewrite -> IHl1'. reflexivity.
+Qed.
+
+Theorem app_length_cons : forall (X:Type) (l1 l2:list X)
+                                 (x:X) (n:nat),
+    length (l1 ++ (x :: l2)) = n ->
+    S (length (l1 ++ l2)) = n.
+Proof.
+  intros. generalize dependent n.
+  induction l1 as [| v l1'].
+  Case "l1 = []". intros. simpl. simpl in H. apply H.
+  Case "l1 = v :: l1'". intros.
+    destruct n as [| n'].
+    SCase "n = 0". inversion H.
+    SCase "n = S n'". apply eq_remove_S. simpl.
+      apply IHl1'. simpl in H. inversion H. reflexivity.
+Qed.
+
+Theorem app_length_twice : forall (X:Type) (n:nat) (l:list X),
+    length l = n ->
+    length (l ++ l) = n + n.
+Proof.
+  intros. generalize dependent n.
+  induction l as [| x l'].
+  Case "l = []". intros. inversion H. simpl. reflexivity.
+  Case "l = x :: l'". intros.
+    destruct n as [| n'].
+    SCase "n = 0". inversion H.
+    SCase "n = S n'".
+      (* ダメみたいですね(諦観) *)
+      (*simpl. apply eq_remove_S.
+      rewrite -> plus_comm. simpl.
+      inversion H.*)
+      inversion H. apply app_length.
 Qed.
