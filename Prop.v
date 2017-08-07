@@ -219,6 +219,7 @@ Theorem four_ev' :
   ev 4.
 Proof.
   apply ev_SS. apply ev_SS. apply ev_0.
+Qed.
 
 Definition four_ev : ev 4 := ev_SS 2 (ev_SS 0 ev_0).
 
@@ -263,7 +264,7 @@ Proof.
   intros n E. destruct n as [| n'].
   Case "n = 0". simpl. apply ev_0.
   Case "n = S n'". simpl. (*保留*)
-Admitted. Qed.
+Admitted.
 
 Theorem ev_even : forall n,
     ev n -> even n.
