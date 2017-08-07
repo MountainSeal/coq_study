@@ -413,3 +413,66 @@ Proof.
     simpl. rewrite -> IHn'. rewrite -> double_neg.
     simpl. reflexivity.
 Qed.
+
+Theorem plus_swap' : forall n m p :nat,
+    n + (m + p) = m + (n + p).
+Proof.
+  intros n m p. rewrite -> plus_comm.
+  replace (n + p) with (p + n).
+  rewrite -> plus_assoc. reflexivity.
+  rewrite -> plus_comm. reflexivity.
+Qed.
+
+Inductive bin : Type :=
+| o : bin
+| so : bin -> bin
+| si : bin -> bin.
+
+Fixpoint inc (b : bin) : bin :=
+  match b with
+  | o => si o
+  | so t => si t
+  | si t => so (inc t)
+end.
+
+Fixpoint bin_to_nat (b : bin) : nat :=
+  match b with
+  | o => 0
+  | so t => double (bin_to_nat t)
+  | si t => S (double (bin_to_nat t))
+end.
+
+Eval simpl in (bin_to_nat (so (si (si (inc o)))) ).
+
+Theorem inc__bin_to_nat__comm : forall b : bin,
+    bin_to_nat (inc b) = S (bin_to_nat b).
+Proof.
+  intros. induction b.
+  Case "b = o". simpl. reflexivity.
+  Case "b = so". simpl. reflexivity.
+  Case "b = si". simpl. rewrite -> IHb.
+    simpl. reflexivity.
+Qed.
+
+Fixpoint nat_to_bin (n:nat) : bin :=
+  match n with
+  | O => o
+  | S n' => inc (nat_to_bin n')
+end.
+
+Theorem ntb_again : forall n : nat,
+    bin_to_nat (nat_to_bin n) = n.
+Proof.
+  intros. induction n as [| n'].
+  Case "n = 0". simpl. reflexivity.
+  Case "n = S n'". simpl.
+    rewrite -> inc__bin_to_nat__comm.
+    rewrite -> IHn'. reflexivity.
+Qed.
+
+(*
+「任意の2進数から始まり、それを自然数にコンバートしてから、また2進数にコンバートし直したものが、元の自然数と一致する」は二進型だと0を表現する方法が複数あるため，成り立たない．
+ex. so o
+*)
+
+Definition normalize (b:bin) : bin := nat_to_bin (bin_to_nat b).
