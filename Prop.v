@@ -25,7 +25,7 @@ Definition even_n__even_SSn (n:nat) : Prop :=
   (even n) -> (even (S (S n))).
 
 Definition between (n m o:nat) : Prop :=
-  and (ble_nat n o) (ble_nat o m) = true.
+  andb (ble_nat n o) (ble_nat o m) = true.
 
 Definition teen : nat->Prop := between 13 19.
 

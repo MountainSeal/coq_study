@@ -23,48 +23,48 @@ Inductive bool : Type :=
 |true : bool
 |false : bool.
 
-Definition neg (b:bool) : bool :=
+Definition negb (b:bool) : bool :=
   match b with
   |true => false
   |false => true
   end.
 
-Definition and (b1:bool) (b2:bool) : bool :=
+Definition andb (b1:bool) (b2:bool) : bool :=
   match b1 with
   |true => b2
   |false => false
   end.
 
-Definition or (b1:bool) (b2:bool) : bool :=
+Definition orb (b1:bool) (b2:bool) : bool :=
   match b1 with
   |true => true
   |false => b2
   end.
 
-Example test_or1: (or true false) = true.
+Example test_orb1: (orb true false) = true.
 Proof. simpl. reflexivity. Qed.
-Example test_or2: (or false false) = false.
+Example test_orb2: (orb false false) = false.
 Proof. simpl. reflexivity. Qed.
-Example test_or3: (or false true) = true.
+Example test_orb3: (orb false true) = true.
 Proof. simpl. reflexivity. Qed.
-Example test_or4: (or true true) = true.
+Example test_orb4: (orb true true) = true.
 Proof. simpl. reflexivity. Qed.
 
 Definition admit {T:Type} : T. Admitted.
 
-Definition nand (b1:bool) (b2:bool) : bool :=
+Definition nandb (b1:bool) (b2:bool) : bool :=
   match b1 with
-  |true => neg b2
+  |true => negb b2
   |false => true
   end.
 
-Example test_nand1: (nand true false) = true.
+Example test_nandb1: (nandb true false) = true.
 Proof. simpl. reflexivity. Qed.
-Example test_nand2: (nand false false) = true.
+Example test_nandb2: (nandb false false) = true.
 Proof. simpl. reflexivity. Qed.
-Example test_nand3: (nand false true) = true.
+Example test_nandb3: (nandb false true) = true.
 Proof. simpl. reflexivity. Qed.
-Example test_nand4: (nand true true) = false.
+Example test_nandb4: (nandb true true) = false.
 Proof. simpl. reflexivity. Qed.
 
 
@@ -96,7 +96,7 @@ Fixpoint evenb (n:nat) : bool :=
   |S (S n') => evenb n'
   end.
 
-Definition oddb (n:nat) : bool := neg (evenb n).
+Definition oddb (n:nat) : bool := negb (evenb n).
 
 Example test_oddb1: (oddb (S O) ) = true.
 Proof. simpl. reflexivity. Qed.
@@ -182,7 +182,7 @@ Proof. simpl. reflexivity. Qed.
 Example test_ble_nat3: (ble_nat 4 2) = false.
 Proof. simpl. reflexivity. Qed.
 
-Definition blt_nat (n m : nat) : bool := and (neg (beq_nat n m)) (ble_nat n m).
+Definition blt_nat (n m : nat) : bool := andb (negb (beq_nat n m)) (ble_nat n m).
 
 Example test_blt_nat1: (blt_nat 2 2) = false.
 Proof. simpl. reflexivity. Qed.
@@ -392,7 +392,7 @@ Proof.
 Qed.
 
 Theorem double_neg : forall b : bool,
-    neg (neg b) = b.
+    negb (negb b) = b.
 Proof.
   intro. destruct b.
   Case "b = true".
@@ -404,7 +404,7 @@ Qed.
 (*とけなかったので次の章やります・・・*)
 (*意外となんとかなった*)
 Theorem evenb_n__odd_Sn : forall n : nat,
-    evenb n = neg (evenb (S n)).
+    evenb n = negb (evenb (S n)).
 Proof.
   intros n. induction n as [| n'].
   Case "n = 0".

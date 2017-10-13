@@ -1,4 +1,5 @@
-Require Import Basics.
+Require Export Lists.
+Require Export Basics.
 
 Inductive boollist : Type :=
 | bool_nil : boollist
@@ -231,7 +232,7 @@ Check @doit3times.
 
 Example test_doit3times: doit3times minustwo 9 = 3.
 Proof. reflexivity. Qed.
-Example test_doit3times': doit3times neg true = false.
+Example test_doit3times': doit3times negb true = false.
 Proof. reflexivity. Qed.
 
 Check plus.
@@ -298,7 +299,7 @@ Example test_filter2':
 Proof. reflexivity. Qed.
 
 Definition filter_even_gt7 (l:list nat) : list nat :=
-  filter (fun n => and (evenb n) (blt_nat 7 n)) l.
+  filter (fun n => andb (evenb n) (blt_nat 7 n)) l.
 
 
 Example test_filter_even_gt7_1 :
@@ -310,7 +311,7 @@ Example test_filter_even_gt7_2 :
 Proof. reflexivity. Qed.
 
 Definition partition {X:Type} (test : X -> bool) (l : list X) : list X * list X :=
-  (filter test l, filter (fun x => neg (test x)) l).
+  (filter test l, filter (fun x => negb (test x)) l).
 
 Fixpoint partition' {X:Type} (test : X -> bool) (l : list X) : list X * list X :=
   match l with
@@ -423,7 +424,7 @@ Eval simpl in (fold plus [1,2,3,4] 0).
 
 Example fold_example1: fold mult [1,2,3,4] 1 = 24.
 Proof. reflexivity. Qed.
-Example fold_example2: fold and [true,true,false,true] true = false.
+Example fold_example2: fold andb [true,true,false,true] true = false.
 Proof. reflexivity. Qed.
 Example fold_example3: fold app [[1],[],[2,3],[4]] [] = [1,2,3,4].
 Proof. reflexivity. Qed.
@@ -823,7 +824,7 @@ Fixpoint existsb {X:Type} (f:X->bool) (l:list X) : bool :=
   end.
 
 Definition existsb' {X:Type} (f:X->bool) (l:list X) : bool :=
-  neg (forallb (fun x => neg (f x)) l).
+  negb (forallb (fun x => negb (f x)) l).
 
 Theorem existsb'_correct : forall {X:Type} (f:X->bool) l,
     existsb' f l = existsb f l.
